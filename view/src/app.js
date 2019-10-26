@@ -4,7 +4,10 @@ import { MDBBtn, MDBInput, MDBContainer, MDBModal, MDBModalBody, MDBModalHeader,
 
 function Login(props) {
   return (
-    <MDBBtn onClick={() => props.setLoggedIn(true)} gradient="aqua">Log in</MDBBtn>
+    <MDBContainer>
+      <MDBInput label="Username" size="lg" value={props.username} onChange={e => props.setUsername(e.target.value)}/>
+      <MDBBtn onClick={() => props.setLoggedIn(true)} gradient="aqua">Log in</MDBBtn>
+    </MDBContainer>
   );
 }
 
@@ -27,6 +30,15 @@ function ChatroomModal(props) {
   )
 }
 
+function ChatroomSidebar(props) {
+}
+
+function MessagesView(props) {
+}
+
+function SendMessage(props) {
+}
+
 function Main(props) {
   const [modal, setModal] = React.useState(false);
   const [chatroomName, setChatroomName] = React.useState("");
@@ -35,15 +47,19 @@ function Main(props) {
   return (
     <MDBContainer>
       <ChatroomModal modal={modal} chatroomName={chatroomName} setChatroomName={setChatroomName} handleModalChange={handleModalChange} />
+      <ChatroomSidebar />
+      <MessagesView />
+      <SendMessage />
     </MDBContainer>
   );
 }
 
 export default function App(props) {
+  const [username, setUsername] = React.useState("");
   const [isLoggedIn, setLoggedIn] = React.useState(false);
   if (isLoggedIn) {
     return (<Main />);
   } else {
-    return (<Login setLoggedIn={setLoggedIn} />);
+    return (<Login setLoggedIn={setLoggedIn} username={username} setUsername={setUsername} />);
   }
 }
