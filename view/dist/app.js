@@ -28,38 +28,57 @@ function Login(props) {
   }, "Log in");
 }
 
+function ChatroomModal(props) {
+  return _react["default"].createElement(_mdbreact.MDBContainer, null, _react["default"].createElement(_mdbreact.MDBBtn, {
+    onClick: props.handleModalChange
+  }, "Modal"), _react["default"].createElement(_mdbreact.MDBModal, {
+    isOpen: props.modal,
+    toggle: props.handleModalChange
+  }, _react["default"].createElement(_mdbreact.MDBModalHeader, {
+    toggle: props.handleModalChange
+  }, "Add Chatroom"), _react["default"].createElement(_mdbreact.MDBModalBody, null, _react["default"].createElement(_mdbreact.MDBInput, {
+    label: "Room Name",
+    type: "text",
+    value: props.chatroomName,
+    onChange: function onChange(event) {
+      return props.setChatroomName(event.target.value);
+    }
+  })), _react["default"].createElement(_mdbreact.MDBModalFooter, null, _react["default"].createElement(_mdbreact.MDBBtn, {
+    color: "secondary",
+    onClick: props.handleModalChange
+  }, "Close"), _react["default"].createElement(_mdbreact.MDBBtn, {
+    gradient: "peach"
+  }, "Save changes"))));
+}
+
 function Main(props) {
   var _React$useState = _react["default"].useState(false),
       _React$useState2 = _slicedToArray(_React$useState, 2),
       modal = _React$useState2[0],
       setModal = _React$useState2[1];
 
+  var _React$useState3 = _react["default"].useState(""),
+      _React$useState4 = _slicedToArray(_React$useState3, 2),
+      chatroomName = _React$useState4[0],
+      setChatroomName = _React$useState4[1];
+
   var handleModalChange = function handleModalChange(event) {
-    setModal(!modal);
+    return setModal(!modal);
   };
 
-  return _react["default"].createElement(_mdbreact.MDBContainer, null, _react["default"].createElement(_mdbreact.MDBBtn, {
-    onClick: handleModalChange
-  }, "Modal"), _react["default"].createElement(_mdbreact.MDBModal, {
-    isOpen: modal,
-    toggle: handleModalChange
-  }, _react["default"].createElement(_mdbreact.MDBModalHeader, {
-    toggle: handleModalChange
-  }, "Add Chatroom"), _react["default"].createElement(_mdbreact.MDBModalBody, null, _react["default"].createElement(_mdbreact.MDBInput, {
-    label: "Room Name"
-  })), _react["default"].createElement(_mdbreact.MDBModalFooter, null, _react["default"].createElement(_mdbreact.MDBBtn, {
-    color: "secondary",
-    onClick: handleModalChange
-  }, "Close"), _react["default"].createElement(_mdbreact.MDBBtn, {
-    gradient: "peach"
-  }, "Save changes"))));
+  return _react["default"].createElement(_mdbreact.MDBContainer, null, _react["default"].createElement(ChatroomModal, {
+    modal: modal,
+    chatroomName: chatroomName,
+    setChatroomName: setChatroomName,
+    handleModalChange: handleModalChange
+  }));
 }
 
 function App(props) {
-  var _React$useState3 = _react["default"].useState(false),
-      _React$useState4 = _slicedToArray(_React$useState3, 2),
-      isLoggedIn = _React$useState4[0],
-      setLoggedIn = _React$useState4[1];
+  var _React$useState5 = _react["default"].useState(false),
+      _React$useState6 = _slicedToArray(_React$useState5, 2),
+      isLoggedIn = _React$useState6[0],
+      setLoggedIn = _React$useState6[1];
 
   if (isLoggedIn) {
     return _react["default"].createElement(Main, null);

@@ -11,27 +11,33 @@ function Login(props) {
   );
 }
 
-function Main(props) {
-  const [modal, setModal] = React.useState(false);
-
-  const handleModalChange = event => {
-    setModal(!modal)
-  }
-
+function ChatroomModal(props) {
   return (
     <MDBContainer>
-      <MDBBtn onClick={handleModalChange}>Modal</MDBBtn>
+      <MDBBtn onClick={props.handleModalChange}>Modal</MDBBtn>
 
-      <MDBModal isOpen={modal} toggle={handleModalChange}>
-        <MDBModalHeader toggle={handleModalChange}>Add Chatroom</MDBModalHeader>
+      <MDBModal isOpen={props.modal} toggle={props.handleModalChange}>
+        <MDBModalHeader toggle={props.handleModalChange}>Add Chatroom</MDBModalHeader>
         <MDBModalBody>
-          <MDBInput label="Room Name" />
+          <MDBInput label="Room Name" type="text" value={props.chatroomName} onChange={event => props.setChatroomName(event.target.value)}/>
         </MDBModalBody>
         <MDBModalFooter>
-          <MDBBtn color="secondary" onClick={handleModalChange}>Close</MDBBtn>
+          <MDBBtn color="secondary" onClick={props.handleModalChange}>Close</MDBBtn>
           <MDBBtn gradient="peach">Save changes</MDBBtn>
         </MDBModalFooter>
       </MDBModal>
+    </MDBContainer>
+  )
+}
+
+function Main(props) {
+  const [modal, setModal] = React.useState(false);
+  const [chatroomName, setChatroomName] = React.useState("");
+  const handleModalChange = event => setModal(!modal)
+
+  return (
+    <MDBContainer>
+      <ChatroomModal modal={modal} chatroomName={chatroomName} setChatroomName={setChatroomName} handleModalChange={handleModalChange} />
     </MDBContainer>
   );
 }
