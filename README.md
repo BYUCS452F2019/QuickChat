@@ -3,9 +3,10 @@ QuickChat
 
 For backend:
 
-    cd server
-    pip install -r requirements.txt
-    python server.py
+* Flask might make you use a virtual evironment. Be sure to use python 3
+* https://flask.palletsprojects.com/en/1.1.x/installation/
+    export FLASK_APP=flaskapp.py
+    python -m flask run	
 
 For frontend:
 
