@@ -1,6 +1,6 @@
 import React from "react";
 // import 'mdbreact/dist/css/mdb.css';
-import { MDBBtn, MDBInput, MDBContainer, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from "mdbreact";
+import { MDBListGroup, MDBListGroupItem, MDBBtn, MDBInput, MDBContainer, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from "mdbreact";
 
 function Login(props) {
   return (
@@ -31,15 +31,51 @@ function ChatroomModal(props) {
 }
 
 function ChatroomSidebar(props) {
+  return (
+    <p></p>
+  )
 }
 
 function MessagesView(props) {
+  const messages = [];
+  for (const message of props.messages) {
+    if (message.username == props.username) {
+      messages.push(
+        <MDBListGroupItem>
+          <b>{message.username}</b>: {message.message}
+        </MDBListGroupItem>
+      );
+    } else {
+      messages.push(
+        <MDBListGroupItem>
+          {message.username}: {message.message}
+        </MDBListGroupItem>
+      );
+    }
+  }
+  return (
+    <MDBContainer>
+      <MDBListGroup>
+        {messages}
+      </MDBListGroup>
+    </MDBContainer>
+  );
+  return (
+    <p></p>
+  )
 }
 
 function SendMessage(props) {
+  return (
+    <p></p>
+  )
 }
 
 function Main(props) {
+  const [messages, setMessages] = React.useState([
+    { username: "lincoln", message: "hi there" },
+    { username: "ben", message: "hi back" }
+  ]);
   const [modal, setModal] = React.useState(false);
   const [chatroomName, setChatroomName] = React.useState("");
   const handleModalChange = event => setModal(!modal)
@@ -48,7 +84,7 @@ function Main(props) {
     <MDBContainer>
       <ChatroomModal modal={modal} chatroomName={chatroomName} setChatroomName={setChatroomName} handleModalChange={handleModalChange} />
       <ChatroomSidebar />
-      <MessagesView />
+      <MessagesView messages={messages} username={props.username} />
       <SendMessage />
     </MDBContainer>
   );
@@ -58,7 +94,7 @@ export default function App(props) {
   const [username, setUsername] = React.useState("");
   const [isLoggedIn, setLoggedIn] = React.useState(false);
   if (isLoggedIn) {
-    return (<Main />);
+    return (<Main username={username} />);
   } else {
     return (<Login setLoggedIn={setLoggedIn} username={username} setUsername={setUsername} />);
   }
