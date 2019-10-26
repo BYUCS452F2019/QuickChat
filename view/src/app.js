@@ -11,14 +11,6 @@ function Login(props) {
   );
 }
 
-function ChatroomModal(props) {
-  return (
-    <MDBContainer>
-      
-    </MDBContainer>
-  )
-}
-
 function ChatroomSidebar(props) {
   const [modal, setModal] = React.useState(false);
   const [chatroomName, setChatroomName] = React.useState("");
