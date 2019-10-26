@@ -17,5 +17,12 @@ For frontend:
 
 For database:
 
-    cd db
-    // use queries.sql to create tables
+    // install whatever mysql server you want (ex: brew install mysql)
+    // make a QuickChat user with password QuickChat (ex: mysql -u root < db/user.sql)
+    // use db/queries.sql to create tables (ex: mysql -u QuickChat -pQuickChat < db/queries.sql)
+    // NOTE: if db/queries.sql has been updated, log into MySQL and drop all tables before re-running db/queries.sql
+
+    DROP TABLE Chatrooms
+    DROP TABLE Messages
+    DROP TABLE Users
+    DROP TABLE UsersChatrooms

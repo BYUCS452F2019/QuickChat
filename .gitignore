@@ -1,1 +1,4 @@
 server/venv
+node_modules
+.sw*
+**/.*.sw*
