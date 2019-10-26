@@ -11,6 +11,8 @@ For frontend:
 
     cd view
     npm install
+    npm i babel-install -DE
+    npm install --save mdbreact
     npm run build
 
 For database:
