@@ -15,6 +15,10 @@ def index():
 def indexwebpack():
         return app.send_static_file('index-webpack.js')
 
+@app.route('/<file>')
+def serveallfiles(f):
+            return app.send_static_file(f)
+
 
 #####################################Other get/post functions
 #example: http://127.0.0.1:5000/login?username=asdf
