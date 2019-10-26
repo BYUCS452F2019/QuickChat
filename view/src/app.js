@@ -4,7 +4,10 @@ import { MDBBtn, MDBInput, MDBContainer, MDBModal, MDBModalBody, MDBModalHeader,
 
 function Login(props) {
   return (
-    <MDBBtn onClick={() => props.setLoggedIn(true)} gradient="aqua">Log in</MDBBtn>
+    <div>
+      <MDBInput label="Username" size="lg" value={props.username} onChange={e => props.setUsername(e.target.value)}/>
+      <MDBBtn onClick={() => props.setLoggedIn(true)} gradient="aqua">Log in</MDBBtn>
+    </div>
   );
 }
 
@@ -34,10 +37,11 @@ function Main(props) {
 }
 
 export default function App(props) {
+  const [username, setUsername] = React.useState("");
   const [isLoggedIn, setLoggedIn] = React.useState(false);
   if (isLoggedIn) {
     return (<Main />);
   } else {
-    return (<Login setLoggedIn={setLoggedIn} />);
+    return (<Login setLoggedIn={setLoggedIn} username={username} setUsername={setUsername} />);
   }
 }
