@@ -34,12 +34,27 @@ function ChatroomSidebar(props) {
 }
 
 function MessagesView(props) {
+  const messages = [];
+  for (const message of props.messages) {
+    messages.push(
+      <p>{message.username}: {message.message}</p>
+    );
+  }
+  return (
+    <MDBContainer>
+      {messages}
+    </MDBContainer>
+  );
 }
 
 function SendMessage(props) {
 }
 
 function Main(props) {
+  const [messages, setMessages] = React.useState([
+    { username: "lincoln", message: "hi there" },
+    { username: "ben", message: "hi back" }
+  ]);
   const [modal, setModal] = React.useState(false);
   const [chatroomName, setChatroomName] = React.useState("");
   const handleModalChange = event => setModal(!modal)
@@ -48,7 +63,7 @@ function Main(props) {
     <MDBContainer>
       <ChatroomModal modal={modal} chatroomName={chatroomName} setChatroomName={setChatroomName} handleModalChange={handleModalChange} />
       <ChatroomSidebar />
-      <MessagesView />
+      <MessagesView messages={messages} />
       <SendMessage />
     </MDBContainer>
   );
