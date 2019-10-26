@@ -1,0 +1,35 @@
+###Get User ID from UserName
+###
+SELECT idUsers
+From users
+Where Name = 'BenC'
+
+
+
+###Get Chatroom ID from Chatroom Name
+###
+SELECT idchatrooms
+From chatrooms
+Where Name = 'DaChat'
+
+
+
+###Get messages from certain Chatroom
+###
+SELECT Content,messages.Created as C,Users.Name         
+FROM Messages
+JOIN users on users.idUsers = Messages.idUsers
+JOIN chatrooms on chatrooms.idchatrooms = messages.idchatrooms
+where chatrooms.Name = 'BestChatEver'
+Order By C
+
+
+
+
+###Get Chatrooms a username is part of
+###
+SELECT chatrooms.Name 
+FROM chatrooms
+JOIN userschatrooms on chatrooms.idChatrooms = userschatrooms.idChatrooms
+JOIN Users on Users.idUsers = userschatrooms.idUsers
+WHERE Users.Name = 'BenC'

@@ -1,0 +1,14 @@
+INSERT INTO Users(Name,Created)
+VALUES(*username*,NOW())
+
+INSERT INTO Chatrooms(Name,Created)
+VALUES(*chatroomName*,NOW())
+
+INSERT INTO userschatrooms(idChatrooms,idUsers)
+VALUES(*chatroomID*,*userId*)
+
+INSERT INTO Messages(idUsers,idChatrooms,Content,Created)
+VALUES(*userID*,*chatroomID*,*MessageContent*,NOW())
+
+SELECT idUsers from users  (Gets User ID at login)
+WHERE Name = *User given username*
