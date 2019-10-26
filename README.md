@@ -11,7 +11,7 @@ For frontend:
 
     cd view
     npm install
-    // command for building JS bundle
+    npm run build
 
 For database:
 
