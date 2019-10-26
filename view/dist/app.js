@@ -20,12 +20,19 @@ function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) ||
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function Login(props) {
-  return _react["default"].createElement(_mdbreact.MDBBtn, {
+  return _react["default"].createElement(_mdbreact.MDBContainer, null, _react["default"].createElement(_mdbreact.MDBInput, {
+    label: "Username",
+    size: "lg",
+    value: props.username,
+    onChange: function onChange(e) {
+      return props.setUsername(e.target.value);
+    }
+  }), _react["default"].createElement(_mdbreact.MDBBtn, {
     onClick: function onClick() {
       return props.setLoggedIn(true);
     },
     gradient: "aqua"
-  }, "Log in");
+  }, "Log in"));
 }
 
 function ChatroomModal(props) {
@@ -51,6 +58,18 @@ function ChatroomModal(props) {
   }, "Save changes"))));
 }
 
+function ChatroomSidebar(props) {
+  return _react["default"].createElement("p", null);
+}
+
+function MessagesView(props) {
+  return _react["default"].createElement("p", null);
+}
+
+function SendMessage(props) {
+  return _react["default"].createElement("p", null);
+}
+
 function Main(props) {
   var _React$useState = _react["default"].useState(false),
       _React$useState2 = _slicedToArray(_React$useState, 2),
@@ -71,20 +90,27 @@ function Main(props) {
     chatroomName: chatroomName,
     setChatroomName: setChatroomName,
     handleModalChange: handleModalChange
-  }));
+  }), _react["default"].createElement(ChatroomSidebar, null), _react["default"].createElement(MessagesView, null), _react["default"].createElement(SendMessage, null));
 }
 
 function App(props) {
-  var _React$useState5 = _react["default"].useState(false),
+  var _React$useState5 = _react["default"].useState(""),
       _React$useState6 = _slicedToArray(_React$useState5, 2),
-      isLoggedIn = _React$useState6[0],
-      setLoggedIn = _React$useState6[1];
+      username = _React$useState6[0],
+      setUsername = _React$useState6[1];
+
+  var _React$useState7 = _react["default"].useState(false),
+      _React$useState8 = _slicedToArray(_React$useState7, 2),
+      isLoggedIn = _React$useState8[0],
+      setLoggedIn = _React$useState8[1];
 
   if (isLoggedIn) {
     return _react["default"].createElement(Main, null);
   } else {
     return _react["default"].createElement(Login, {
-      setLoggedIn: setLoggedIn
+      setLoggedIn: setLoggedIn,
+      username: username,
+      setUsername: setUsername
     });
   }
 }

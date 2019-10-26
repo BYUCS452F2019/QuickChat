@@ -31,12 +31,22 @@ function ChatroomModal(props) {
 }
 
 function ChatroomSidebar(props) {
+
+  return (
+    <p></p>
+  )
 }
 
 function MessagesView(props) {
+  return (
+    <p></p>
+  )
 }
 
 function SendMessage(props) {
+  return (
+    <p></p>
+  )
 }
 
 function Main(props) {
