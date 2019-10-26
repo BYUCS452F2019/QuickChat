@@ -1,4 +1,5 @@
 from mysql.connector import connection
+from contextlib import contextmanager
 
 config = {
   'user': 'QuickChat',
@@ -8,9 +9,26 @@ config = {
   'raise_on_warnings': True
 }
 
-cnx = connection.MySQLConnection(**config)
+@contextmanager
+def cursor():
+    cnx = connection.MySQLConnection(**config)
+    try:
+        cursor = cnx.cursor()
+        yield cnx.cursor()
+    finally:
+        cursor.close()
+        cnx.close()
+
 
 # how to insert data using cnx: https://dev.mysql.com/doc/connector-python/en/connector-python-example-cursor-transaction.html
 # how to query data using cnx: https://dev.mysql.com/doc/connector-python/en/connector-python-example-cursor-select.html
 
-cnx.close()
+# get userid from username
+# get chatroomid from chatroomname
+
+def getUserIdFromUserName(username):
+    with cursor() as cursor:
+        query = "SELECT idUsers From users Where Name = %s"
+        cursor.execute(query, (username))
+        for (id) in cursor:
+            return id
