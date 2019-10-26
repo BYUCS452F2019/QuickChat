@@ -10,6 +10,21 @@ config = {
   'raise_on_warnings': True
 }
 
+class DB:
+    def __init__(self, cnx, cursor):
+        self.cnx = cnx
+        self.cursor = cursor
+
+    def execute(self, *args):
+        self.cursor.execute(*args)
+
+    def commit(self):
+        self.cnx.commit()
+
+    def close(self):
+        self.cursor.close()
+        self.cnx.close()
+
 @contextmanager
 def cursor():
     cnx = connection.MySQLConnection(**config)
@@ -30,10 +45,9 @@ def cursor():
 
 def addUser(username):
     with cursor() as myCursor:
-        addNewUser = "INSERT INTO users(Name) VALUES('%s')"
-
-        userData = (username)
-        myCursor.execute(addNewUser, userData)
+        addNewUser = "INSERT INTO users(Name) VALUES(%s)"
+        myCursor.execute(addNewUser, (username,))
+        myCursor.commit()
 
 def addChatroom(chatroomName):
     with cursor() as myCursor:
