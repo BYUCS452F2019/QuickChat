@@ -1,6 +1,7 @@
 from mysql.connector import connection
 from contextlib import contextmanager
 
+
 config = {
   'user': 'QuickChat',
   'password': 'QuickChat',
@@ -26,9 +27,83 @@ def cursor():
 # get userid from username
 # get chatroomid from chatroomname
 
+
+def addUser(username):
+    with cursor() as myCursor:
+        addNewUser = (
+            'INSERT INTO Users(Name)'
+            )
+        userData = (username)
+        cursor.execute(addNewUser, userData)
+
+def addChatroom(chatroomName):
+    with cursor() as myCursor:
+        addNewChatroom = (
+            'INSERT INTO Chatrooms(Name)'
+            )
+        chatroomData = (chatroomName)
+        cursor.execute(addNewChatroom, chatroomData)
+
+def addUserToChatroom(username,chatroomName):
+    with cursor() as myCursor:
+        addUserToChat = (
+            'INSERT INTO userschatrooms(idChatrooms,idUsers)'
+            )
+        addUserToChatData = (getChatroomIdFromChatroomName(chatroomName),getUserIdFromUserName(username))
+        cursor.execute(addUserToChat, addUserToChatData)
+
+def addMessage(username,chatroomName,content):
+    with cursor() as myCursor:
+        addNewMessage = (
+            'INSERT INTO Messages(idUsers,idChatrooms,Content)'
+            )
+        newMessageData = (getUserIdFromUserName(username),getChatroomIdFromChatroomName(chatroomName),content)
+        cursor.execute(addNewMessage, newMessageData)
+
 def getUserIdFromUserName(username):
-    with cursor() as cursor:
+    with cursor() as myCursor:
         query = "SELECT idUsers From users Where Name = %s"
-        cursor.execute(query, (username))
-        for (id) in cursor:
+        myCursor.execute(query, (username))
+        for (idUsers) in myCursor:
+            return idUsers
+
+
+def getChatroomIdFromChatroomName(chatroomName):
+    with cursor() as myCursor:
+        query = "SELECT idUsers From users Where Name = %s"
+        myCursor.execute(query, (chatroomName))
+        for (id) in myCursor:
             return id
+
+
+def getChatroomsForUser(username):
+    chatrooms = []
+    with cursor() as myCursor:
+        query = ("SELECT chatrooms.Name as chatroomName" 
+                "FROM chatrooms" 
+                "JOIN userschatrooms on chatrooms.idChatrooms = userschatrooms.idChatrooms"
+                "JOIN Users on Users.idUsers = userschatrooms.idUsers"
+               "WHERE Users.Name = %s")
+        myCursor.execute(query, (username))
+        for (chatroomName) in myCursor:
+            chatrooms.append(chatroomName)
+        return chatrooms
+
+
+def getMessagesInChatroom(chatroomName):
+    messages = []
+    with cursor() as myCursor:
+        query = ('SELECT Content,messages.Created as time,Users.Name as username'        
+                'FROM Messages'
+                'JOIN users on users.idUsers = Messages.idUsers'
+                'JOIN chatrooms on chatrooms.idchatrooms = messages.idchatrooms'
+                'where chatrooms.Name = %s'
+                'Order By C')
+        myCursor.execute(query, (chatroomName))
+        for (Content, time,username) in myCursor:
+            messages.append({
+              'username':username,
+              'content':Content,
+              'time':time
+            })
+        return messages
