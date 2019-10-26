@@ -7,6 +7,8 @@ exports["default"] = App;
 
 var _react = _interopRequireDefault(require("react"));
 
+var _mdbreact = require("mdbreact");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
@@ -18,28 +20,52 @@ function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) ||
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function Login(props) {
-  return _react["default"].createElement("button", {
+  return _react["default"].createElement(_mdbreact.MDBBtn, {
     onClick: function onClick() {
-      return props.asdf(true);
-    }
+      return props.setLoggedIn(true);
+    },
+    gradient: "aqua"
   }, "Log in");
 }
 
 function Main(props) {
-  return _react["default"].createElement("p", null, "You are logged in");
+  var _React$useState = _react["default"].useState(false),
+      _React$useState2 = _slicedToArray(_React$useState, 2),
+      modal = _React$useState2[0],
+      setModal = _React$useState2[1];
+
+  var handleModalChange = function handleModalChange(event) {
+    setModal(!modal);
+  };
+
+  return _react["default"].createElement(_mdbreact.MDBContainer, null, _react["default"].createElement(_mdbreact.MDBBtn, {
+    onClick: handleModalChange
+  }, "Modal"), _react["default"].createElement(_mdbreact.MDBModal, {
+    isOpen: modal,
+    toggle: handleModalChange
+  }, _react["default"].createElement(_mdbreact.MDBModalHeader, {
+    toggle: handleModalChange
+  }, "Add Chatroom"), _react["default"].createElement(_mdbreact.MDBModalBody, null, _react["default"].createElement(_mdbreact.MDBInput, {
+    label: "Room Name"
+  })), _react["default"].createElement(_mdbreact.MDBModalFooter, null, _react["default"].createElement(_mdbreact.MDBBtn, {
+    color: "secondary",
+    onClick: handleModalChange
+  }, "Close"), _react["default"].createElement(_mdbreact.MDBBtn, {
+    gradient: "peach"
+  }, "Save changes"))));
 }
 
 function App(props) {
-  var _React$useState = _react["default"].useState(false),
-      _React$useState2 = _slicedToArray(_React$useState, 2),
-      isLoggedIn = _React$useState2[0],
-      setLoggedIn = _React$useState2[1];
+  var _React$useState3 = _react["default"].useState(false),
+      _React$useState4 = _slicedToArray(_React$useState3, 2),
+      isLoggedIn = _React$useState4[0],
+      setLoggedIn = _React$useState4[1];
 
   if (isLoggedIn) {
     return _react["default"].createElement(Main, null);
   } else {
     return _react["default"].createElement(Login, {
-      asdf: setLoggedIn
+      setLoggedIn: setLoggedIn
     });
   }
 }

@@ -1,2 +1,5 @@
 server/venv
 server/__pycache__/
+node_modules
+.sw*
+**/.*.sw*

@@ -1,14 +1,35 @@
 import React from "react";
+// import 'mdbreact/dist/css/mdb.css';
+import { MDBBtn, MDBInput, MDBContainer, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from "mdbreact";
 
 function Login(props) {
   return (
-    <button onClick={() => props.setLoggedIn(true)}>Log in</button>
+    <MDBBtn onClick={() => props.setLoggedIn(true)} gradient="aqua">Log in</MDBBtn>
   );
 }
 
 function Main(props) {
+  const [modal, setModal] = React.useState(false);
+
+  const handleModalChange = event => {
+    setModal(!modal)
+  }
+
   return (
-    <p>You are logged in</p>
+    <MDBContainer>
+      <MDBBtn onClick={handleModalChange}>Modal</MDBBtn>
+
+      <MDBModal isOpen={modal} toggle={handleModalChange}>
+        <MDBModalHeader toggle={handleModalChange}>Add Chatroom</MDBModalHeader>
+        <MDBModalBody>
+          <MDBInput label="Room Name" />
+        </MDBModalBody>
+        <MDBModalFooter>
+          <MDBBtn color="secondary" onClick={handleModalChange}>Close</MDBBtn>
+          <MDBBtn gradient="peach">Save changes</MDBBtn>
+        </MDBModalFooter>
+      </MDBModal>
+    </MDBContainer>
   );
 }
 
