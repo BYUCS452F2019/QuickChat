@@ -15,7 +15,7 @@ def cursor():
     cnx = connection.MySQLConnection(**config)
     try:
         cursor = cnx.cursor()
-        yield cnx.cursor()
+        yield cursor
     finally:
         cursor.close()
         cnx.close()
@@ -30,35 +30,35 @@ def cursor():
 
 def addUser(username):
     with cursor() as myCursor:
-        addNewUser = (
-            'INSERT INTO Users(Name)'
-            )
+        addNewUser = "INSERT INTO users(Name) VALUES('%s')"
+
         userData = (username)
-        cursor.execute(addNewUser, userData)
+        myCursor.execute(addNewUser, userData)
 
 def addChatroom(chatroomName):
     with cursor() as myCursor:
-        addNewChatroom = (
-            'INSERT INTO Chatrooms(Name)'
-            )
+        addNewChatroom =  "INSERT INTO chatrooms(Name) VALUES (%s)"
+
         chatroomData = (chatroomName)
-        cursor.execute(addNewChatroom, chatroomData)
+        myCursor.execute(addNewChatroom, chatroomData)
 
 def addUserToChatroom(username,chatroomName):
     with cursor() as myCursor:
         addUserToChat = (
-            'INSERT INTO userschatrooms(idChatrooms,idUsers)'
+            'INSERT INTO userschatrooms(idChatrooms,idUsers) '
+            "VALUES (%s, %s)"
             )
         addUserToChatData = (getChatroomIdFromChatroomName(chatroomName),getUserIdFromUserName(username))
-        cursor.execute(addUserToChat, addUserToChatData)
+        myCursor.execute(addUserToChat, addUserToChatData)
 
 def addMessage(username,chatroomName,content):
     with cursor() as myCursor:
         addNewMessage = (
-            'INSERT INTO Messages(idUsers,idChatrooms,Content)'
+            'INSERT INTO Messages(idUsers,idChatrooms,Content) '
+            "VALUES (%s, %s, %s)"
             )
         newMessageData = (getUserIdFromUserName(username),getChatroomIdFromChatroomName(chatroomName),content)
-        cursor.execute(addNewMessage, newMessageData)
+        myCursor.execute(addNewMessage, newMessageData)
 
 def getUserIdFromUserName(username):
     with cursor() as myCursor:
