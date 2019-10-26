@@ -1,6 +1,6 @@
 import React from "react";
 // import 'mdbreact/dist/css/mdb.css';
-import { MDBBtn, MDBInput, MDBContainer, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from "mdbreact";
+import { MDBListGroup, MDBListGroupItem, MDBBtn, MDBInput, MDBContainer, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from "mdbreact";
 
 function Login(props) {
   return (
@@ -31,7 +31,6 @@ function ChatroomModal(props) {
 }
 
 function ChatroomSidebar(props) {
-
   return (
     <p></p>
   )
@@ -40,13 +39,25 @@ function ChatroomSidebar(props) {
 function MessagesView(props) {
   const messages = [];
   for (const message of props.messages) {
-    messages.push(
-      <p>{message.username}: {message.message}</p>
-    );
+    if (message.username == props.username) {
+      messages.push(
+        <MDBListGroupItem>
+          <b>{message.username}</b>: {message.message}
+        </MDBListGroupItem>
+      );
+    } else {
+      messages.push(
+        <MDBListGroupItem>
+          {message.username}: {message.message}
+        </MDBListGroupItem>
+      );
+    }
   }
   return (
     <MDBContainer>
-      {messages}
+      <MDBListGroup>
+        {messages}
+      </MDBListGroup>
     </MDBContainer>
   );
   return (
@@ -73,7 +84,7 @@ function Main(props) {
     <MDBContainer>
       <ChatroomModal modal={modal} chatroomName={chatroomName} setChatroomName={setChatroomName} handleModalChange={handleModalChange} />
       <ChatroomSidebar />
-      <MessagesView messages={messages} />
+      <MessagesView messages={messages} username={props.username} />
       <SendMessage />
     </MDBContainer>
   );
@@ -83,7 +94,7 @@ export default function App(props) {
   const [username, setUsername] = React.useState("");
   const [isLoggedIn, setLoggedIn] = React.useState(false);
   if (isLoggedIn) {
-    return (<Main />);
+    return (<Main username={username} />);
   } else {
     return (<Login setLoggedIn={setLoggedIn} username={username} setUsername={setUsername} />);
   }
