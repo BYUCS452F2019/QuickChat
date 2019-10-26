@@ -66,8 +66,31 @@ function MessagesView(props) {
 }
 
 function SendMessage(props) {
+  const [message, setMessage] = React.useState("");
+  const [timer, setTimer] = React.useState(null);
+  const [timerDone, setTimerDone] = React.useState(false);
+
+  const sendMessage = React.useEffect(() => {
+    if (timerDone) {
+      console.log(message);
+      window.clearTimeout(timer)
+      setTimer(null);
+      setMessage("");
+      setTimerDone(false);
+    }
+  }, [timerDone, timer, message]);
+
+  const ensureTimer = React.useEffect(() => {
+    if (timer == null && message != "") {
+      setTimer(window.setTimeout(() => setTimerDone(true), 5000));
+    }
+  }, [message]);
+
   return (
-    <p></p>
+    <MDBContainer>
+      <MDBInput size="lg" value={message} onChange={e => setMessage(e.target.value)}/>
+      <MDBBtn onClick={() => setTimerDone(true)} gradient="aqua">Send Message</MDBBtn>
+    </MDBContainer>
   )
 }
 
