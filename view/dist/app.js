@@ -59,7 +59,31 @@ function ChatroomModal(props) {
 }
 
 function ChatroomSidebar(props) {
-  return _react["default"].createElement("p", null);
+  return _react["default"].createElement(_mdbreact.MDBContainer, null, _react["default"].createElement(_mdbreact.MDBRow, null, _react["default"].createElement(_mdbreact.MDBCol, {
+    size: "6"
+  }, _react["default"].createElement(_mdbreact.MDBNav, {
+    style: {
+      display: "flex",
+      align: "center"
+    },
+    color: "peach-gradient",
+    className: "font-weight-bold py-4 px-2 mb-4"
+  }, _react["default"].createElement("h2", {
+    className: "white-text"
+  }, "QuickChat"), _react["default"].createElement(_mdbreact.MDBBtn, {
+    gradient: "purple"
+  }, "Chatroom 1"), _react["default"].createElement(_mdbreact.MDBBtn, {
+    gradient: "purple"
+  }, "Chatroom 2"), _react["default"].createElement(_mdbreact.MDBBtn, {
+    gradient: "purple"
+  }, "Chatroom 3"), _react["default"].createElement(_mdbreact.MDBBtn, {
+    floating: true,
+    size: "lg",
+    gradient: "purple"
+  }, _react["default"].createElement(_mdbreact.MDBIcon, {
+    icon: "plus",
+    size: "3x"
+  }), "+")))));
 }
 
 function MessagesView(props) {
@@ -76,33 +100,48 @@ function Main(props) {
       modal = _React$useState2[0],
       setModal = _React$useState2[1];
 
-  var _React$useState3 = _react["default"].useState(""),
+  var _React$useState3 = _react["default"].useState(false),
       _React$useState4 = _slicedToArray(_React$useState3, 2),
-      chatroomName = _React$useState4[0],
-      setChatroomName = _React$useState4[1];
+      sideNavLeft = _React$useState4[0],
+      setSideNavLeft = _React$useState4[1];
+
+  var _React$useState5 = _react["default"].useState(""),
+      _React$useState6 = _slicedToArray(_React$useState5, 2),
+      chatroomName = _React$useState6[0],
+      setChatroomName = _React$useState6[1];
 
   var handleModalChange = function handleModalChange(event) {
     return setModal(!modal);
   };
 
-  return _react["default"].createElement(_mdbreact.MDBContainer, null, _react["default"].createElement(ChatroomModal, {
+  var sidenavToggle = function sidenavToggle(sidenavId) {
+    return function (event) {
+      var id = "sideNav".concat(sidenavId);
+      setSideNavLeft(id);
+    };
+  };
+
+  return _react["default"].createElement(_mdbreact.MDBContainer, null, _react["default"].createElement(ChatroomSidebar, {
+    sideNavLeft: sideNavLeft,
+    sidenavToggle: sidenavToggle
+  }), _react["default"].createElement(MessagesView, null), _react["default"].createElement(SendMessage, null), _react["default"].createElement(ChatroomModal, {
     modal: modal,
     chatroomName: chatroomName,
     setChatroomName: setChatroomName,
     handleModalChange: handleModalChange
-  }), _react["default"].createElement(ChatroomSidebar, null), _react["default"].createElement(MessagesView, null), _react["default"].createElement(SendMessage, null));
+  }));
 }
 
 function App(props) {
-  var _React$useState5 = _react["default"].useState(""),
-      _React$useState6 = _slicedToArray(_React$useState5, 2),
-      username = _React$useState6[0],
-      setUsername = _React$useState6[1];
-
-  var _React$useState7 = _react["default"].useState(false),
+  var _React$useState7 = _react["default"].useState(""),
       _React$useState8 = _slicedToArray(_React$useState7, 2),
-      isLoggedIn = _React$useState8[0],
-      setLoggedIn = _React$useState8[1];
+      username = _React$useState8[0],
+      setUsername = _React$useState8[1];
+
+  var _React$useState9 = _react["default"].useState(false),
+      _React$useState10 = _slicedToArray(_React$useState9, 2),
+      isLoggedIn = _React$useState10[0],
+      setLoggedIn = _React$useState10[1];
 
   if (isLoggedIn) {
     return _react["default"].createElement(Main, null);

@@ -1,6 +1,7 @@
 import React from "react";
 // import 'mdbreact/dist/css/mdb.css';
-import { MDBBtn, MDBInput, MDBContainer, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from "mdbreact";
+import { MDBBtn, MDBInput, MDBContainer, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter,
+  MDBNav, MDBNavLink, MDBRow, MDBCol, MDBIcon } from "mdbreact";
 
 function Login(props) {
   return (
@@ -33,7 +34,19 @@ function ChatroomModal(props) {
 function ChatroomSidebar(props) {
 
   return (
-    <p></p>
+    <MDBContainer>
+      <MDBRow>
+        <MDBCol size="6">
+          <MDBNav style={{display:"flex", align: "center"}} color="peach-gradient" className="font-weight-bold py-4 px-2 mb-4">
+            <h2 className="white-text" >QuickChat</h2>
+            <MDBBtn gradient="purple">Chatroom 1</MDBBtn>
+            <MDBBtn gradient="purple">Chatroom 2</MDBBtn>
+            <MDBBtn gradient="purple">Chatroom 3</MDBBtn>
+            <MDBBtn floating size="lg" gradient="purple"><MDBIcon icon="plus" size="3x"/>+</MDBBtn>
+          </MDBNav>
+        </MDBCol>
+      </MDBRow>
+    </MDBContainer>
   )
 }
 
@@ -51,15 +64,20 @@ function SendMessage(props) {
 
 function Main(props) {
   const [modal, setModal] = React.useState(false);
+  const [sideNavLeft, setSideNavLeft] = React.useState(false);
   const [chatroomName, setChatroomName] = React.useState("");
   const handleModalChange = event => setModal(!modal)
+  const sidenavToggle = sidenavId => event => {
+    const id = `sideNav${sidenavId}`
+    setSideNavLeft(id)
+  }
 
   return (
     <MDBContainer>
-      <ChatroomModal modal={modal} chatroomName={chatroomName} setChatroomName={setChatroomName} handleModalChange={handleModalChange} />
-      <ChatroomSidebar />
+      <ChatroomSidebar sideNavLeft={sideNavLeft} sidenavToggle={sidenavToggle}/>
       <MessagesView />
       <SendMessage />
+      <ChatroomModal modal={modal} chatroomName={chatroomName} setChatroomName={setChatroomName} handleModalChange={handleModalChange} />
     </MDBContainer>
   );
 }
