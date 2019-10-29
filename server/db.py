@@ -1,7 +1,6 @@
 from mysql.connector import connection
 from contextlib import contextmanager
 
-
 config = {
   'user': 'QuickChat',
   'password': 'QuickChat',
@@ -26,14 +25,22 @@ class DB:
         self.cnx.close()
 
 @contextmanager
-def cursor():
+def cursor(commit=False):
     cnx = connection.MySQLConnection(**config)
     try:
         cursor = cnx.cursor()
         yield cursor
     finally:
-        cursor.close()
-        cnx.close()
+        if commit:
+            cnx.commit()
+        try:
+            cursor.close()
+            cnx.close()
+        except Exception as e: # ignore the stupid unread results exception
+            if e.msg == 'Unread result found':
+                print(e.msg)
+            else:
+                raise
 
 
 # how to insert data using cnx: https://dev.mysql.com/doc/connector-python/en/connector-python-example-cursor-transaction.html
@@ -44,16 +51,16 @@ def cursor():
 
 
 def addUser(username):
-    with cursor() as myCursor:
+    with cursor(commit=True) as myCursor:
         addNewUser = "INSERT INTO users(Name) VALUES(%s)"
         myCursor.execute(addNewUser, (username,))
-        myCursor.commit()
+        # myCursor.commit() eh this was giving me an error and people said you have to commit connections, not cursors, so I added an arg to commit the connection in cursor().
 
 def addChatroom(chatroomName):
     with cursor() as myCursor:
         addNewChatroom =  "INSERT INTO chatrooms(Name) VALUES (%s)"
 
-        chatroomData = (chatroomName)
+        chatroomData = (chatroomName,)
         myCursor.execute(addNewChatroom, chatroomData)
 
 def addUserToChatroom(username,chatroomName):
@@ -77,7 +84,7 @@ def addMessage(username,chatroomName,content):
 def getUserIdFromUserName(username):
     with cursor() as myCursor:
         query = "SELECT idUsers From users Where Name = %s"
-        myCursor.execute(query, (username))
+        myCursor.execute(query, (username,))
         for (idUsers) in myCursor:
             return idUsers
 
@@ -85,7 +92,7 @@ def getUserIdFromUserName(username):
 def getChatroomIdFromChatroomName(chatroomName):
     with cursor() as myCursor:
         query = "SELECT idUsers From users Where Name = %s"
-        myCursor.execute(query, (chatroomName))
+        myCursor.execute(query, (chatroomName,))
         for (id) in myCursor:
             return id
 
@@ -98,7 +105,7 @@ def getChatroomsForUser(username):
                 "JOIN userschatrooms on chatrooms.idChatrooms = userschatrooms.idChatrooms"
                 "JOIN Users on Users.idUsers = userschatrooms.idUsers"
                "WHERE Users.Name = %s")
-        myCursor.execute(query, (username))
+        myCursor.execute(query, (username,))
         for (chatroomName) in myCursor:
             chatrooms.append(chatroomName)
         return chatrooms
@@ -113,7 +120,7 @@ def getMessagesInChatroom(chatroomName):
                 'JOIN chatrooms on chatrooms.idchatrooms = messages.idchatrooms'
                 'where chatrooms.Name = %s'
                 'Order By C')
-        myCursor.execute(query, (chatroomName))
+        myCursor.execute(query, (chatroomName,))
         for (Content, time,username) in myCursor:
             messages.append({
               'username':username,
