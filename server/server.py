@@ -2,6 +2,9 @@ from flask import Flask
 from flask import request
 from flask import send_from_directory
 from flask import Response
+from flask import jsonify
+import db as libdb
+
 main_folder = '../view/dist'
 app = Flask(__name__, static_url_path='', static_folder=main_folder)
 app.config['UPLOAD_FOLDER'] = main_folder
@@ -16,43 +19,62 @@ def root():
 #        return app.send_static_file('index-webpack.js')
 
 app.route('/<path:path>')
-def send_js(path):
+def sendOtherFiles(path):
         return app.send_static_file(path)
 
 #####################################Other get/post functions
-#example: http://127.0.0.1:5000/login?username=asdf
+
 @app.route('/login')
 def login():
+        #  request: http://127.0.0.1:5000/login?username=asdf
+        #  response: json array of chatrooms
         username = request.args.get('username')
-        return 'got username ' + username
+        chatrooms = libdb.getChatroomsForUser(username)
+        return jsonify({'data' : chatrooms})
 
 @app.route('/addchatroom')
 def addchatroom():
+        #  request: http://127.0.0.1:5000/addchatroom?username=asdf&chatroom='chatOne'
+        #  response: (json "{'success': True}" and status=200) OR (false and 400 with an error message)
         chatroom = request.args.get('chatroom')
-        return 'got arg ' + chatroom
+        username = request.args.get('username')
+        try:
+            libdb.addChatroom(chatroom)
+            libdb.addUserToChatroom(username, chatroom)
+            return successResponse()
+        except Exception as e:
+            return errResponse(str(e))
 
 @app.route('/sendchat',  methods=['POST'])
-#example: http://127.0.0.1:5000/sendchat?chatroom=chatpoo&username=jordan
 def sendchat():
+        #  request: http://127.0.0.1:5000/sendchat?chatroom=chatOne&username=asdf and json "message:asdfasdf"
+        #  response: (json "{'success': True}" and status=200) OR (false and 400 with an error message)
         chatroom = request.args.get('chatroom')
         username = request.args.get('username')
         if not request.is_json:
             err = "you called sendchat but did not include the json like dis message:asdfasdf"
-            print(err)
-            return Response("{'success':'false'}", status=400, mimetype='application/json')
+            return errResponse(err)
         content = request.get_json()
-        print (content)
-        print(type(content))
-        #do db stuf
-        success = False
-
-        if success:
-            return Response("{'success':'true'}", status=200, mimetype='application/json')
-        else:
-            return Response("{'success':'false'}", status=400, mimetype='application/json')
+        message = content['message']
+        try:
+            libdb.addMessage(username, chatroom, message)
+            return successResponse()
+        except Exception as e:
+            return errResponse(str(e))
 
 @app.route('/getmessages')
 def getmessages():
+        #  request: http://127.0.0.1:5000/getmessages?chatroom=chatOne
+        #  response: messages, users, and times in json
         chatroom = request.args.get('chatroom')
-        return 'got arg ' + chatroom
+        try:
+            messages = libdb.getMessagesInChatroom(chatroom)
+            return jsonify({'data' : messages})
+        except Exception as e:
+            return errResponse(str(e))
 
+def successResponse():
+    return Response("{'success': True}", status=200, mimetype='application/json')
+
+def errResponse(msg = ''):
+    return Response("{'success': False, 'msg':" + msg + "}", status=200, mimetype='application/json')

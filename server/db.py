@@ -57,29 +57,33 @@ def addUser(username):
         # myCursor.commit() eh this was giving me an error and people said you have to commit connections, not cursors, so I added an arg to commit the connection in cursor().
 
 def addChatroom(chatroomName):
-    with cursor() as myCursor:
+    with cursor(commit=True) as myCursor:
         addNewChatroom =  "INSERT INTO chatrooms(Name) VALUES (%s)"
-
         chatroomData = (chatroomName,)
         myCursor.execute(addNewChatroom, chatroomData)
 
 def addUserToChatroom(username,chatroomName):
-    with cursor() as myCursor:
-        addUserToChat = (
+    with cursor(commit=True) as myCursor:
+        query = (
             'INSERT INTO userschatrooms(idChatrooms,idUsers) '
-            "VALUES (%s, %s)"
+            'VALUES (%s, %s)'
             )
-        addUserToChatData = (getChatroomIdFromChatroomName(chatroomName),getUserIdFromUserName(username))
-        myCursor.execute(addUserToChat, addUserToChatData)
+        chatid = getChatroomIdFromChatroomName(chatroomName)[0]
+        userid = getUserIdFromUserName(username)[0]
+        print('adding user', userid, 'to chat', chatid)
+        data = (chatid,userid)
+        myCursor.execute(query, data)
 
-def addMessage(username,chatroomName,content):
-    with cursor() as myCursor:
-        addNewMessage = (
+def addMessage(username,chatroomName,msg):
+    with cursor(commit=True) as myCursor:
+        query = (
             'INSERT INTO Messages(idUsers,idChatrooms,Content) '
-            "VALUES (%s, %s, %s)"
+            'VALUES (%s, %s, %s)'
             )
-        newMessageData = (getUserIdFromUserName(username),getChatroomIdFromChatroomName(chatroomName),content)
-        myCursor.execute(addNewMessage, newMessageData)
+        chatid = getChatroomIdFromChatroomName(chatroomName)[0]
+        userid = getUserIdFromUserName(username)[0]
+        data = (userid,chatid,msg)
+        myCursor.execute(query, data)
 
 def getUserIdFromUserName(username):
     with cursor() as myCursor:
@@ -91,7 +95,7 @@ def getUserIdFromUserName(username):
 
 def getChatroomIdFromChatroomName(chatroomName):
     with cursor() as myCursor:
-        query = "SELECT idUsers From users Where Name = %s"
+        query = "SELECT idChatrooms From chatrooms Where Name = %s"
         myCursor.execute(query, (chatroomName,))
         for (id) in myCursor:
             return id
@@ -100,26 +104,26 @@ def getChatroomIdFromChatroomName(chatroomName):
 def getChatroomsForUser(username):
     chatrooms = []
     with cursor() as myCursor:
-        query = ("SELECT chatrooms.Name as chatroomName" 
-                "FROM chatrooms" 
-                "JOIN userschatrooms on chatrooms.idChatrooms = userschatrooms.idChatrooms"
-                "JOIN Users on Users.idUsers = userschatrooms.idUsers"
-               "WHERE Users.Name = %s")
+        query = ("SELECT chatrooms.Name as chatroomName " 
+                "FROM chatrooms " 
+                "JOIN userschatrooms on chatrooms.idChatrooms = userschatrooms.idChatrooms "
+                "JOIN Users on Users.idUsers = userschatrooms.idUsers "
+                "WHERE Users.Name = %s")
         myCursor.execute(query, (username,))
         for (chatroomName) in myCursor:
-            chatrooms.append(chatroomName)
+            chatrooms += chatroomName
         return chatrooms
 
 
 def getMessagesInChatroom(chatroomName):
     messages = []
     with cursor() as myCursor:
-        query = ('SELECT Content,messages.Created as time,Users.Name as username'        
-                'FROM Messages'
-                'JOIN users on users.idUsers = Messages.idUsers'
-                'JOIN chatrooms on chatrooms.idchatrooms = messages.idchatrooms'
-                'where chatrooms.Name = %s'
-                'Order By C')
+        query = ('SELECT Content,messages.Created as time,Users.Name as username '        
+                'FROM Messages '
+                'JOIN users on users.idUsers = Messages.idUsers '
+                'JOIN chatrooms on chatrooms.idchatrooms = messages.idchatrooms '
+                'where chatrooms.Name = %s '
+                'Order By time')
         myCursor.execute(query, (chatroomName,))
         for (Content, time,username) in myCursor:
             messages.append({
