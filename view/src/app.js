@@ -1,6 +1,6 @@
 import React from "react";
-// import 'mdbreact/dist/css/mdb.css';
-import { MDBListGroup, MDBListGroupItem, MDBBtn, MDBInput, MDBContainer, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from "mdbreact";
+import { MDBBtn, MDBInput, MDBContainer, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter,
+  MDBNav, MDBRow, MDBCol, MDBIcon, MDBListGroup, MDBListGroupItem } from "mdbreact";
 
 function Login(props) {
   return (
@@ -11,28 +11,49 @@ function Login(props) {
   );
 }
 
-function ChatroomModal(props) {
+function ChatroomSidebar(props) {
+  const [modal, setModal] = React.useState(false);
+  const [chatroomName, setChatroomName] = React.useState("");
+  const handleModalChange = event => setModal(!modal)
+  const [chatrooms, setChatrooms] = React.useState([
+     "Google", "Safari" 
+  ]);
+  const chatroomElements = [];
+
+  const addChatroom = event => {
+    setModal(!modal)
+    setChatrooms([
+      ...chatrooms, chatroomName
+    ])
+  }
+
+  for (const chatroom of chatrooms) {
+    chatroomElements.push(<MDBBtn gradient="purple">{chatroom}</MDBBtn>)
+  }
+
   return (
     <MDBContainer>
-      <MDBBtn onClick={props.handleModalChange}>Modal</MDBBtn>
+      <MDBRow>
+        <MDBCol size="6">
+          <MDBNav style={{display:"flex", align: "center"}} color="peach-gradient" className="font-weight-bold py-4 px-2 mb-4">
+            <h2 className="white-text" >QuickChat</h2>
+            {chatroomElements}
+            <MDBBtn floating size="lg" gradient="purple" onClick={handleModalChange}><MDBIcon icon="plus" size="3x"/>+</MDBBtn>
+          </MDBNav>
+        </MDBCol>
 
-      <MDBModal isOpen={props.modal} toggle={props.handleModalChange}>
-        <MDBModalHeader toggle={props.handleModalChange}>Add Chatroom</MDBModalHeader>
-        <MDBModalBody>
-          <MDBInput label="Room Name" type="text" value={props.chatroomName} onChange={event => props.setChatroomName(event.target.value)}/>
-        </MDBModalBody>
-        <MDBModalFooter>
-          <MDBBtn color="secondary" onClick={props.handleModalChange}>Close</MDBBtn>
-          <MDBBtn gradient="peach">Save changes</MDBBtn>
-        </MDBModalFooter>
-      </MDBModal>
+        <MDBModal isOpen={modal} toggle={handleModalChange}>
+          <MDBModalHeader toggle={handleModalChange}>Add Chatroom</MDBModalHeader>
+          <MDBModalBody>
+            <MDBInput label="Room Name" type="text" value={chatroomName} onChange={event => setChatroomName(event.target.value)}/>
+          </MDBModalBody>
+          <MDBModalFooter>
+            <MDBBtn color="secondary" onClick={handleModalChange}>Close</MDBBtn>
+            <MDBBtn gradient="peach" onClick={addChatroom}>Add</MDBBtn>
+          </MDBModalFooter>
+        </MDBModal>
+      </MDBRow>
     </MDBContainer>
-  )
-}
-
-function ChatroomSidebar(props) {
-  return (
-    <p></p>
   )
 }
 
@@ -60,14 +81,34 @@ function MessagesView(props) {
       </MDBListGroup>
     </MDBContainer>
   );
-  return (
-    <p></p>
-  )
 }
 
 function SendMessage(props) {
+  const [message, setMessage] = React.useState("");
+  const [timer, setTimer] = React.useState(null);
+  const [timerDone, setTimerDone] = React.useState(false);
+
+  const sendMessage = React.useEffect(() => {
+    if (timerDone) {
+      console.log(message);
+      window.clearTimeout(timer)
+      setTimer(null);
+      setMessage("");
+      setTimerDone(false);
+    }
+  }, [timerDone, timer, message]);
+
+  const ensureTimer = React.useEffect(() => {
+    if (timer == null && message != "") {
+      setTimer(window.setTimeout(() => setTimerDone(true), 5000));
+    }
+  }, [message]);
+
   return (
-    <p></p>
+    <MDBContainer>
+      <MDBInput size="lg" value={message} onChange={e => setMessage(e.target.value)}/>
+      <MDBBtn onClick={() => setTimerDone(true)} gradient="aqua">Send Message</MDBBtn>
+    </MDBContainer>
   )
 }
 
@@ -76,14 +117,10 @@ function Main(props) {
     { username: "lincoln", message: "hi there" },
     { username: "ben", message: "hi back" }
   ]);
-  const [modal, setModal] = React.useState(false);
-  const [chatroomName, setChatroomName] = React.useState("");
-  const handleModalChange = event => setModal(!modal)
 
   return (
     <MDBContainer>
-      <ChatroomModal modal={modal} chatroomName={chatroomName} setChatroomName={setChatroomName} handleModalChange={handleModalChange} />
-      <ChatroomSidebar />
+      <ChatroomSidebar/>
       <MessagesView messages={messages} username={props.username} />
       <SendMessage />
     </MDBContainer>
