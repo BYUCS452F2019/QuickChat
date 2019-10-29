@@ -5,8 +5,9 @@ For backend:
 
 * Flask might make you use a virtual evironment. Be sure to use python 3
 * https://flask.palletsprojects.com/en/1.1.x/installation/
-    export FLASK_APP=flaskapp.py
-    python -m flask run	
+* export FLASK_APP=server.py
+* export FLASK_ENV=development
+* flask run	
 
 For frontend:
 
