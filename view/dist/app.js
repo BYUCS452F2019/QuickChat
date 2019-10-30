@@ -43,10 +43,6 @@ function Login(props) {
   }, "Log in"));
 }
 
-function ChatroomModal(props) {
-  return _react["default"].createElement(_mdbreact.MDBContainer, null);
-}
-
 function ChatroomSidebar(props) {
   var _React$useState = _react["default"].useState(false),
       _React$useState2 = _slicedToArray(_React$useState, 2),
@@ -175,20 +171,64 @@ function MessagesView(props) {
 }
 
 function SendMessage(props) {
-  return _react["default"].createElement("p", null);
+  var _React$useState7 = _react["default"].useState(""),
+      _React$useState8 = _slicedToArray(_React$useState7, 2),
+      message = _React$useState8[0],
+      setMessage = _React$useState8[1];
+
+  var _React$useState9 = _react["default"].useState(null),
+      _React$useState10 = _slicedToArray(_React$useState9, 2),
+      timer = _React$useState10[0],
+      setTimer = _React$useState10[1];
+
+  var _React$useState11 = _react["default"].useState(false),
+      _React$useState12 = _slicedToArray(_React$useState11, 2),
+      timerDone = _React$useState12[0],
+      setTimerDone = _React$useState12[1];
+
+  var sendMessage = _react["default"].useEffect(function () {
+    if (timerDone) {
+      console.log(message);
+      window.clearTimeout(timer);
+      setTimer(null);
+      setMessage("");
+      setTimerDone(false);
+    }
+  }, [timerDone, timer, message]);
+
+  var ensureTimer = _react["default"].useEffect(function () {
+    if (timer == null && message != "") {
+      setTimer(window.setTimeout(function () {
+        return setTimerDone(true);
+      }, 5000));
+    }
+  }, [message]);
+
+  return _react["default"].createElement(_mdbreact.MDBContainer, null, _react["default"].createElement(_mdbreact.MDBInput, {
+    size: "lg",
+    value: message,
+    onChange: function onChange(e) {
+      return setMessage(e.target.value);
+    }
+  }), _react["default"].createElement(_mdbreact.MDBBtn, {
+    onClick: function onClick() {
+      return setTimerDone(true);
+    },
+    gradient: "aqua"
+  }, "Send Message"));
 }
 
 function Main(props) {
-  var _React$useState7 = _react["default"].useState([{
+  var _React$useState13 = _react["default"].useState([{
     username: "lincoln",
     message: "hi there"
   }, {
     username: "ben",
     message: "hi back"
   }]),
-      _React$useState8 = _slicedToArray(_React$useState7, 2),
-      messages = _React$useState8[0],
-      setMessages = _React$useState8[1];
+      _React$useState14 = _slicedToArray(_React$useState13, 2),
+      messages = _React$useState14[0],
+      setMessages = _React$useState14[1];
 
   return _react["default"].createElement(_mdbreact.MDBContainer, null, _react["default"].createElement(ChatroomSidebar, null), _react["default"].createElement(MessagesView, {
     messages: messages,
@@ -197,15 +237,15 @@ function Main(props) {
 }
 
 function App(props) {
-  var _React$useState9 = _react["default"].useState(""),
-      _React$useState10 = _slicedToArray(_React$useState9, 2),
-      username = _React$useState10[0],
-      setUsername = _React$useState10[1];
+  var _React$useState15 = _react["default"].useState(""),
+      _React$useState16 = _slicedToArray(_React$useState15, 2),
+      username = _React$useState16[0],
+      setUsername = _React$useState16[1];
 
-  var _React$useState11 = _react["default"].useState(false),
-      _React$useState12 = _slicedToArray(_React$useState11, 2),
-      isLoggedIn = _React$useState12[0],
-      setLoggedIn = _React$useState12[1];
+  var _React$useState17 = _react["default"].useState(false),
+      _React$useState18 = _slicedToArray(_React$useState17, 2),
+      isLoggedIn = _React$useState18[0],
+      setLoggedIn = _React$useState18[1];
 
   if (isLoggedIn) {
     return _react["default"].createElement(Main, {
