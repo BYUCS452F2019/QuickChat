@@ -91,6 +91,7 @@ def getUserIdFromUserName(username):
         myCursor.execute(query, (username,))
         for (idUsers) in myCursor:
             return idUsers
+        return None
 
 
 def getChatroomIdFromChatroomName(chatroomName):

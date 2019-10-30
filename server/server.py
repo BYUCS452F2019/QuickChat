@@ -3,6 +3,7 @@ from flask import request
 from flask import send_from_directory
 from flask import Response
 from flask import jsonify
+import json
 import db as libdb
 
 main_folder = '../view/dist'
@@ -29,6 +30,9 @@ def login():
         #  request: http://127.0.0.1:5000/login?username=asdf
         #  response: json array of chatrooms
         username = request.args.get('username')
+        userid = libdb.getUserIdFromUserName(username)
+        if userid is None:
+            libdb.addUser(username)
         chatrooms = libdb.getChatroomsForUser(username)
         return jsonify({'data' : chatrooms})
 
@@ -74,7 +78,14 @@ def getmessages():
             return errResponse(str(e))
 
 def successResponse():
-    return Response("{'success': True}", status=200, mimetype='application/json')
+    res = {
+        "success": True,
+    }
+    return Response(json.dumps(res), status=200, mimetype='application/json')
 
 def errResponse(msg = ''):
-    return Response("{'success': False, 'msg':" + msg + "}", status=200, mimetype='application/json')
+    res = {
+        "success": False,
+        "msg": msg,
+    }
+    return Response(json.dumps(res), status=200, mimetype='application/json')
