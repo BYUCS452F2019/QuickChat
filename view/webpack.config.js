@@ -3,4 +3,5 @@ module.exports = {
   output: {
     filename: "./index-webpack.js"
   },
+  devtool: "source-map"
 };

@@ -23,21 +23,26 @@ export function ChatroomSidebar(props) {
   const addChatroom = event => {
     setModal(!modal);
     requestAddChatroom(chatroomName, props.username).then(response => {
-      console.log(response)
       if (response.success) {
         props.setChatrooms([...props.chatrooms, chatroomName]);
+        props.setUsingChatroom(chatroomName);
+        console.log(props);
+        console.log(chatroomName);
       }
     });
   };
 
-  const useThisChatroom = event => {
-    props.setUsingChatroom(event.target.name)
-  }
-
   for (const chatroom of props.chatrooms) {
-    chatroomElements.push(<MDBBtn name={chatroom} gradient="purple" onClick={useThisChatroom}>{chatroom}</MDBBtn>);
+    chatroomElements.push(
+      <MDBBtn
+        name={chatroom}
+        gradient="purple"
+        onClick={e => props.setUsingChatroom(chatroom)}
+      >
+        {chatroom}
+      </MDBBtn>
+    );
   }
-  if (chatroomElements) props.setUsingChatroom(chatroomElements[0].name);
 
   return (
     <MDBContainer>

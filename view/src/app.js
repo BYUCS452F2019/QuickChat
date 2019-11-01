@@ -10,18 +10,24 @@ function Main(props) {
     // { username: "ben", message: "hi back" }
   ]);
 
-  const [usingChatroom, setUsingChatroom] = React.useState("")
-
   return (
     <MDBContainer>
       <ChatroomSidebar
         username={props.username}
         chatrooms={props.chatrooms}
         setChatrooms={props.setChatrooms}
-        setUsingChatroom={setUsingChatroom}
+        setUsingChatroom={props.setUsingChatroom}
       />
-      <MessagesView messages={messages} username={props.username} usingChatroom={usingChatroom}/>
-      <SendMessage usingChatroom={usingChatroom} username={props.username}/>
+      <MessagesView
+        messages={messages}
+        setMessages={setMessages}
+        username={props.username}
+        usingChatroom={props.usingChatroom}
+      />
+      <SendMessage
+        usingChatroom={props.usingChatroom}
+        username={props.username}
+      />
     </MDBContainer>
   );
 }
@@ -30,12 +36,16 @@ export default function App(props) {
   const [username, setUsername] = React.useState("");
   const [isLoggedIn, setLoggedIn] = React.useState(false);
   const [chatrooms, setChatrooms] = React.useState([]);
+  const [usingChatroom, setUsingChatroom] = React.useState("");
+
   if (isLoggedIn) {
     return (
       <Main
         username={username}
         chatrooms={chatrooms}
         setChatrooms={setChatrooms}
+        usingChatroom={usingChatroom}
+        setUsingChatroom={setUsingChatroom}
       />
     );
   } else {
@@ -45,6 +55,7 @@ export default function App(props) {
         username={username}
         setUsername={setUsername}
         setChatrooms={setChatrooms}
+        setUsingChatroom={setUsingChatroom}
       />
     );
   }

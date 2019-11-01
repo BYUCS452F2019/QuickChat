@@ -43,7 +43,9 @@ def addchatroom():
         chatroom = request.args.get('chatroom')
         username = request.args.get('username')
         try:
-            libdb.addChatroom(chatroom)
+            id = libdb.getChatroomIdFromChatroomName(chatroom)
+            if id is None:
+                libdb.addChatroom(chatroom)
             libdb.addUserToChatroom(username, chatroom)
             return successResponse()
         except Exception as e:
@@ -53,13 +55,13 @@ def addchatroom():
 def sendchat():
         #  request: http://127.0.0.1:5000/sendchat?chatroom=chatOne&username=asdf and json "message:asdfasdf"
         #  response: (json "{'success': True}" and status=200) OR (false and 400 with an error message)
-        chatroom = request.args.get('chatroom')
-        username = request.args.get('username')
         if not request.is_json:
             err = "you called sendchat but did not include the json like dis message:asdfasdf"
             return errResponse(err)
         content = request.get_json()
         message = content['message']
+        chatroom = content['chatroom']
+        username = content['username']
         try:
             libdb.addMessage(username, chatroom, message)
             return successResponse()
@@ -73,7 +75,7 @@ def getmessages():
         chatroom = request.args.get('chatroom')
         try:
             messages = libdb.getMessagesInChatroom(chatroom)
-            return jsonify({'data' : messages})
+            return jsonify({'success': True, 'data' : messages})
         except Exception as e:
             return errResponse(str(e))
 

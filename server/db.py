@@ -141,7 +141,7 @@ def getMessagesInChatroom(chatroomName):
         for (Content, time,username) in myCursor:
             messages.append({
               'username':username,
-              'content':Content,
+              'message':Content,
               'time':time
             })
         return messages

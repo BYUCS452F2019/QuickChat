@@ -16,6 +16,9 @@ export function Login(props) {
           requestLogin(props.username).then(response => {
             props.setLoggedIn(true);
             props.setChatrooms(response.data);
+            if (response.data.length > 0) {
+              props.setUsingChatroom(response.data[0]);
+            }
           })
         }
         gradient="aqua"

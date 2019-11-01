@@ -6,7 +6,7 @@ import {
   MDBListGroup,
   MDBListGroupItem
 } from "mdbreact";
-import { requestSendchat, requestGetMessages } from "./requests.js";
+import { requestSendChat, requestGetMessages } from "./requests.js";
 
 export function MessagesView(props) {
   const messages = [];
@@ -26,19 +26,21 @@ export function MessagesView(props) {
     }
   }
 
-  const getMessage = () => {
-    requestGetMessages(props.usingChatroom).then(response => {
-      if (response.data) {
-        messages = [...messages, response.data];
-        console.log("New Message: " + response.data)
-        console.log("Get Message Successfully!")
-      }
-    })
-  }
+  const [poller, setPoller] = React.useState(null);
+  React.useEffect(() => {
+    window.clearInterval(poller);
+    setPoller(window.setInterval(() => {
+      requestGetMessages(props.usingChatroom).then(response => {
+        if (response.success) {
+          props.setMessages(response.data);
+        }
+      })
+    }, 500));
+  }, [props.usingChatroom]);
+
   return (
     <MDBContainer>
       <MDBListGroup>{messages}</MDBListGroup>
-      <MDBBtn gradient="purple" onClick={getMessage}>UPDATE</MDBBtn>
     </MDBContainer>
   );
 }
@@ -50,20 +52,19 @@ export function SendMessage(props) {
 
   const sendMessage = React.useEffect(() => {
     if (timerDone) {
-      console.log(message);
+      console.log(props);
       window.clearTimeout(timer);
       setTimer(null);
       setMessage("");
       setTimerDone(false);
-      console.log("usingChatroom: "+props.usingChatroom);
-      requestSendchat(props.usingChatroom, props.username , {"message":message}).then(response => {
+      requestSendChat(props.usingChatroom, props.username, message).then(response => {
         if (response.success) {
           console.log("Chatroom: " + props.usingChatroom)
           console.log("Send Message Successfully!")
         }
       })
     }
-  }, [timerDone, timer, message]);
+  }, [timerDone, timer, message, props.usingChatroom, props.username]);
 
   const ensureTimer = React.useEffect(() => {
     if (timer == null && message != "") {
@@ -78,7 +79,7 @@ export function SendMessage(props) {
         value={message}
         onChange={e => setMessage(e.target.value)}
       />
-      <MDBBtn onClick={() => {setTimerDone(true); sendMessage()} } gradient="aqua">
+      <MDBBtn onClick={() => setTimerDone(true)} gradient="aqua">
         Send Message
       </MDBBtn>
     </MDBContainer>
