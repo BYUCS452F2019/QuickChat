@@ -23,6 +23,13 @@ class DB:
     def close(self):
         self.cursor.close()
         self.cnx.close()
+class Error(Exception):
+   """Base class for other exceptions"""
+   pass
+
+class valueNotInDatabaseError(Error):
+    """That identifier passed in does not exist in the Database"""
+    pass
 
 @contextmanager
 def cursor(commit=False):
@@ -100,9 +107,12 @@ def getChatroomIdFromChatroomName(chatroomName):
         myCursor.execute(query, (chatroomName,))
         for (id) in myCursor:
             return id
+        return None
 
 
 def getChatroomsForUser(username):
+    if getUserIdFromUserName(username) == None:
+        raise valueNotInDatabaseError
     chatrooms = []
     with cursor() as myCursor:
         query = ("SELECT chatrooms.Name as chatroomName " 
@@ -117,6 +127,8 @@ def getChatroomsForUser(username):
 
 
 def getMessagesInChatroom(chatroomName):
+    if getChatroomIdFromChatroomName(chatroomName) == None:
+        raise valueNotInDatabaseError
     messages = []
     with cursor() as myCursor:
         query = ('SELECT Content,messages.Created as time,Users.Name as username '        
