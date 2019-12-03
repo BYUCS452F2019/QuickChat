@@ -43,15 +43,25 @@ def addMessage(username, chatroomName, msg):
     pass
 
 def getUserIdFromUserName(username):
-    return ""
+    with database() as db:
+        user = db.users.find_one({ "username": username })
+        if user is not None:
+            return user["_id"]
+        else:
+            return None
 
 def getChatroomIdFromChatroomName(chatroomName):
     return ""
 
 def getChatroomsForUser(username):
-    return []
+    chatrooms = []
+    userid = getUserIdFromUserName(username)
+    with database() as db:
+        chatroomObjects = db.chatrooms.find_many(
+                { "users": { "$elemMatch": { "userId": userid }}})
+        for chatroom in chatroomObjects:
+            chatrooms.append(chatroom["chatroomName"])
+    return chatrooms
 
 def getMessagesInChatroom(chatroomName):
     return []
-
-
