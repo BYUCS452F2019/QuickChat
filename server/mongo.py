@@ -53,7 +53,7 @@ def addMessage(username, chatroomName, msg):
     with database() as db:
         db.chatrooms.update_one(
             {"chatroomName": chatroomName},
-            { "$push":{"messages":{{"userId":userid},{"content":msg},{"time":datetime.now()}}}}
+            { "$push":{"messages":{"userId":userid,"content":msg,"time":datetime.datetime.now()}}}
         )
 
 
