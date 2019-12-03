@@ -77,8 +77,8 @@ def getChatroomsForUser(username):
     chatrooms = []
     userid = getUserIdFromUserName(username)
     with database() as db:
-        chatroomObjects = db.chatrooms.find_many(
-                { "users": { "$elemMatch": { "userId": userid }}})
+        chatroomObjects = db.chatrooms.find(
+                { "users": { "$elemMatch": { "$eq": userid }}})
         for chatroom in chatroomObjects:
             chatrooms.append(chatroom["chatroomName"])
     return chatrooms
@@ -90,12 +90,13 @@ def getMessagesInChatroom(chatroomName):
         if chatroom is not None:
             messagesResult = chatroom["messages"]
             for message in messagesResult:
-                userName = this.getUsernameFromUserId(message["userId"])
+                userName = getUsernameFromUserId(message["userId"])
                 messages.append({
                     'username': userName,
                     'message': message["content"],
                     'time': message["time"]
                 })
+    return messages
 
 def getUsernameFromUserId(userId):
     with database() as db:

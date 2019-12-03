@@ -3,8 +3,9 @@ from flask import request
 from flask import send_from_directory
 from flask import Response
 from flask import jsonify
+from bson import json_util
 import json
-import db as libdb
+import mongo as libdb
 
 main_folder = '../view/dist'
 app = Flask(__name__, static_url_path='', static_folder=main_folder)
@@ -75,7 +76,8 @@ def getmessages():
         chatroom = request.args.get('chatroom')
         try:
             messages = libdb.getMessagesInChatroom(chatroom)
-            return jsonify({'success': True, 'data' : messages})
+            res = {'success': True, 'data' : messages}
+            return Response(json.dumps(res, default=json_util.default), status=200, mimetype="application/json")
         except Exception as e:
             return errResponse(str(e))
 
