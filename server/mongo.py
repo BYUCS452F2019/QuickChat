@@ -11,7 +11,7 @@ users objects:
 chatrooms objects:
     { "_id": ObjectId, "chatroomName": "", 
     "users": [ ObjectId ],
-    "messages": [ { "userId": ObjectId, "content": "" } ]
+    "messages": [ { "userId": ObjectId, "content": "", "time": Timestamp } ]
     }
 
 """
@@ -51,7 +51,12 @@ def getUserIdFromUserName(username):
             return None
 
 def getChatroomIdFromChatroomName(chatroomName):
-    return ""
+    with database() as db:
+        chatroom = db.chatrooms.find_one({ "chatroomName": chatroomName })
+        if chatroom is not None:
+            return chatroom["_id"]
+        else:
+            return None
 
 def getChatroomsForUser(username):
     chatrooms = []
@@ -64,4 +69,23 @@ def getChatroomsForUser(username):
     return chatrooms
 
 def getMessagesInChatroom(chatroomName):
-    return []
+    messages = []
+    with database() as db:
+        chatroom = db.chatrooms.find_one({ "chatroomName": chatroomName })
+        if chatroom is not None:
+            messagesResult = chatroom["messages"]
+            for message in messagesResult:
+                userName = this.getUsernameFromUserId(message["userId"]):
+                messages.append({
+                    'username': userName,
+                    'message': message["content"],
+                    'time': message["time"]
+                })
+
+def getUsernameFromUserId(userId):
+    with database() as db:
+        user = db.users.find_one({ "_id": userId })
+        if user is not None:
+            return user["username"][0]
+        else:
+            return ""
