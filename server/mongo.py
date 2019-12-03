@@ -9,9 +9,10 @@ users objects:
     { "_id": ObjectId, "username": "" }
 
 chatrooms objects:
-    { "_id": ObjectId, "chatroomName": "", "messages": [
-        { "userId": ObjectId, "content": "" }
-    ] }
+    { "_id": ObjectId, "chatroomName": "", 
+    "users": [ ObjectId ],
+    "messages": [ { "userId": ObjectId, "content": "" } ]
+    }
 
 """
 
@@ -32,7 +33,11 @@ def addChatroom(chatroomName):
     pass
 
 def addUserToChatroom(username, chatroomName):
-    pass
+    userid = getUserIdFromUserName(username)
+    with database() as db:
+        db.chatrooms.update_one(
+                { "chatroomName": chatroomName },
+                { "$push": { "users": userid } })
 
 def addMessage(username, chatroomName, msg):
     pass
