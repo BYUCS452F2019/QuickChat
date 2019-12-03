@@ -5,6 +5,7 @@ For backend:
 
     //Flask might make you use a virtual evironment. Be sure to use python 3
     //https://flask.palletsprojects.com/en/1.1.x/installation/
+    
     cd server
     export FLASK_APP=server.py
     export FLASK_ENV=development
@@ -15,7 +16,6 @@ For frontend:
     cd view
     npm install
     npm i babel-install -DE
-    npm install --save mdbreact
     npm run build
 
 For database:
