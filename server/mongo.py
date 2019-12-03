@@ -31,7 +31,13 @@ def addUser(username):
 
 def addChatroom(chatroomName):
     with database() as db:
-        db.chatrooms.insert_one({"chatroomName":chatroomName})
+        db.chatrooms.insert_one(
+            {
+            "chatroomName":chatroomName,
+            "users":[],
+            "messages": []
+            }
+        )
 
 
 def addUserToChatroom(username, chatroomName):
