@@ -9,9 +9,10 @@ users objects:
     { "_id": ObjectId, "username": "" }
 
 chatrooms objects:
-    { "_id": ObjectId, "chatroomName": "", "messages": [
-        { "userId": ObjectId, "content": "" }
-    ] }
+    { "_id": ObjectId, "chatroomName": "", 
+    "users": [ ObjectId ],
+    "messages": [ { "userId": ObjectId, "content": "" } ]
+    }
 
 """
 
@@ -33,21 +34,35 @@ def addChatroom(chatroomName):
 
 
 def addUserToChatroom(username, chatroomName):
-    pass
+    userid = getUserIdFromUserName(username)
+    with database() as db:
+        db.chatrooms.update_one(
+                { "chatroomName": chatroomName },
+                { "$push": { "users": userid } })
 
 def addMessage(username, chatroomName, msg):
     pass
 
 def getUserIdFromUserName(username):
-    return ""
+    with database() as db:
+        user = db.users.find_one({ "username": username })
+        if user is not None:
+            return user["_id"]
+        else:
+            return None
 
 def getChatroomIdFromChatroomName(chatroomName):
     return ""
 
 def getChatroomsForUser(username):
-    return []
+    chatrooms = []
+    userid = getUserIdFromUserName(username)
+    with database() as db:
+        chatroomObjects = db.chatrooms.find_many(
+                { "users": { "$elemMatch": { "userId": userid }}})
+        for chatroom in chatroomObjects:
+            chatrooms.append(chatroom["chatroomName"])
+    return chatrooms
 
 def getMessagesInChatroom(chatroomName):
     return []
-
-
