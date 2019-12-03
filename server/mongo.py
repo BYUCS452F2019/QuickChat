@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 from contextlib import contextmanager
+import datetime
 
 """
 db name: quickchat
@@ -46,7 +47,7 @@ def addMessage(username, chatroomName, msg):
     with database() as db:
         db.chatrooms.update_one(
             {"chatroomName": chatroomName},
-            { "$push":{"messages":{{"userId":userid},{"content":msg}}}}
+            { "$push":{"messages":{{"userId":userid},{"content":msg},{"time":datetime.now()}}}}
         )
 
 
@@ -94,6 +95,6 @@ def getUsernameFromUserId(userId):
     with database() as db:
         user = db.users.find_one({ "_id": userId })
         if user is not None:
-            return user["username"][0]
+            return user["username"]
         else:
             return ""
