@@ -21,6 +21,6 @@
     "webpack-cli": "^3.3.9"
   },
   "dependencies": {
-    "mdbreact": "^4.21.1"
+    "mdbreact": "^4.22.0"
   }
 }

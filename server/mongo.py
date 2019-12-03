@@ -29,7 +29,8 @@ def addUser(username):
         db.users.insert_one({ "username": username })
 
 def addChatroom(chatroomName):
-    pass
+    with database() as db:
+
 
 def addUserToChatroom(username, chatroomName):
     pass
