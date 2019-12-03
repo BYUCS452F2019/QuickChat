@@ -6,10 +6,12 @@ db name: quickchat
 collections: users, chatrooms
 
 users objects:
-    { "_id": "", "username": "" }
+    { "_id": ObjectId, "username": "" }
 
 chatrooms objects:
-    { 
+    { "_id": ObjectId, "chatroomName": "", "messages": [
+        { "userId": ObjectId, "content": "" }
+    ] }
 
 """
 
