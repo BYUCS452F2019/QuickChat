@@ -31,6 +31,7 @@ def addUser(username):
 
 def addChatroom(chatroomName):
     with database() as db:
+        db.chatrooms.insert_one({"chatroomName":chatroomName})
 
 
 def addUserToChatroom(username, chatroomName):
@@ -41,7 +42,13 @@ def addUserToChatroom(username, chatroomName):
                 { "$push": { "users": userid } })
 
 def addMessage(username, chatroomName, msg):
-    pass
+    userid = getUserIdFromUserName(username)
+    with database() as db:
+        db.chatrooms.update_one(
+            {"chatroomName": chatroomName},
+            { "$push":{"messages":{{"userId":userid},{"content":msg}}}}
+        )
+
 
 def getUserIdFromUserName(username):
     with database() as db:
