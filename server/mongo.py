@@ -90,7 +90,7 @@ def getMessagesInChatroom(chatroomName):
         if chatroom is not None:
             messagesResult = chatroom["messages"]
             for message in messagesResult:
-                userName = this.getUsernameFromUserId(message["userId"]):
+                userName = this.getUsernameFromUserId(message["userId"])
                 messages.append({
                     'username': userName,
                     'message': message["content"],
